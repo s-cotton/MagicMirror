@@ -50,6 +50,15 @@ var Module = Class.extend({
 		return [];
 	},
 
+	/* getScripts()
+	 * Returns a list of CDNJS scripts the module requires to be loaded.
+	 *
+	 * return Array<String> - An array with CDNJS Paths.
+	 */
+	getCDNScripts: function(){
+		return [];
+	},
+
 	/* getStyles()
 	 * Returns a list of stylesheets the module requires to be loaded.
 	 *
@@ -213,6 +222,30 @@ var Module = Class.extend({
 	 */
 	loadScripts: function (callback) {
 		this.loadDependencies("getScripts", callback);
+	},
+
+	/* loadCDNScripts()
+	 * Load all required scripts by requesting the MM object to load the files.
+	 *
+	 * argument callback function - Function called when done.
+	 */
+	loadCDNScripts: function (callback) {
+		var self = this;
+		var dependencies = this["getCDNScripts"]();
+
+		var loadNextDependency = function () {
+			if (dependencies.length > 0) {
+				var nextDependency = dependencies[0];
+				Loader.loadFile("https://cdnjs.cloudflare.com/ajax/libs/" + nextDependency, self, function () {
+					dependencies = dependencies.slice(1);
+					loadNextDependency();
+				});
+			} else {
+				callback();
+			}
+		};
+
+		loadNextDependency();
 	},
 
 	/* loadDependencies(funcName, callback)

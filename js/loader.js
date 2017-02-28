@@ -153,14 +153,17 @@ var Loader = (function() {
 
 		mObj.setData(module);
 
-		mObj.loadScripts(function() {
-			Log.log("Scripts loaded for: " + module.name);
-			mObj.loadStyles(function() {
-				Log.log("Styles loaded for: " + module.name);
-				mObj.loadTranslations(function() {
-					Log.log("Translations loaded for: " + module.name);
-					moduleObjects.push(mObj);
-					callback();
+		mObj.loadCDNScripts(function() {
+			Log.log("CDN Scripts loaded for: " + module.name);
+			mObj.loadScripts(function() {
+				Log.log("Scripts loaded for: " + module.name);
+				mObj.loadStyles(function() {
+					Log.log("Styles loaded for: " + module.name);
+					mObj.loadTranslations(function() {
+						Log.log("Translations loaded for: " + module.name);
+						moduleObjects.push(mObj);
+						callback();
+					});
 				});
 			});
 		});
